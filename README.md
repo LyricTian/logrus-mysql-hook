@@ -2,7 +2,7 @@
 
 > A mysql-based logrus hook
 
-[![ReportCard][reportcard-image]][reportcard-url] [![GoDoc][godoc-image]][godoc-url] [![License][license-image]][license-url]
+[![Build][Build-Status-Image]][Build-Status-Url] [![Coverage][Coverage-Image]][Coverage-Url] [![ReportCard][reportcard-image]][reportcard-url] [![GoDoc][godoc-image]][godoc-url] [![License][license-image]][license-url]
 
 ## Quick Start
 
@@ -12,7 +12,24 @@
 $ go get -u -v github.com/LyricTian/logrus-mysql-hook
 ```
 
-### Use examples
+### Usage
+
+```go
+import "github.com/LyricTian/logrus-mysql-hook"
+
+// ...
+
+mysqlHook := mysqlhook.New(
+		mysqlhook.SetExec(mysqlhook.NewExec(db, "log")),
+)
+
+defer mysqlHook.Flush()
+
+log := logrus.New()
+log.AddHook(mysqlHook)
+```
+
+### Examples
 
 ```go
 package main
@@ -64,6 +81,10 @@ func main() {
 
     Copyright (c) 2018 Lyric
 
+[Build-Status-Url]: https://travis-ci.org/LyricTian/logrus-mysql-hook
+[Build-Status-Image]: https://travis-ci.org/LyricTian/logrus-mysql-hook.svg?branch=master
+[Coverage-Url]: https://coveralls.io/github/LyricTian/logrus-mysql-hook?branch=master
+[Coverage-Image]: https://coveralls.io/repos/github/LyricTian/logrus-mysql-hook/badge.svg?branch=master
 [reportcard-url]: https://goreportcard.com/report/github.com/LyricTian/logrus-mysql-hook
 [reportcard-image]: https://goreportcard.com/badge/github.com/LyricTian/logrus-mysql-hook
 [godoc-url]: https://godoc.org/github.com/LyricTian/logrus-mysql-hook
