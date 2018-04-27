@@ -1,0 +1,12 @@
+language: go
+sudo: false
+go_import_path: github.com/LyricTian/logrus-mysql-hook
+go:
+  - 1.7
+services:
+  - mysql
+before_install:
+  - mysql -e 'CREATE DATABASE myapp_test;'
+  - go get github.com/mattn/goveralls
+script:
+  - $HOME/gopath/bin/goveralls -service=travis-ci
