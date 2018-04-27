@@ -20,7 +20,7 @@ import "github.com/LyricTian/logrus-mysql-hook"
 // ...
 
 mysqlHook := mysqlhook.New(
-		mysqlhook.SetExec(mysqlhook.NewExec(db, "log")),
+	mysqlhook.SetExec(mysqlhook.NewExec(db, "log")),
 )
 
 defer mysqlHook.Flush()
