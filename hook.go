@@ -1,6 +1,7 @@
 package mysqlhook
 
 import (
+	"database/sql"
 	"io"
 
 	"github.com/LyricTian/queue"
@@ -83,6 +84,13 @@ func SetOut(out io.Writer) Option {
 
 // Option a hook parameter options
 type Option func(*options)
+
+// Default create a default mysql hook
+func Default(db *sql.DB, tableName string) *Hook {
+	return New(
+		SetExec(NewExec(db, tableName)),
+	)
+}
 
 // New creates a hook to be added to an instance of logger
 func New(opt ...Option) *Hook {

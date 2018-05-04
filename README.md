@@ -19,9 +19,7 @@ import "github.com/LyricTian/logrus-mysql-hook"
 
 // ...
 
-mysqlHook := mysqlhook.New(
-	mysqlhook.SetExec(mysqlhook.NewExec(db, "log")),
-)
+mysqlHook := mysqlhook.Default(db,"log")
 
 defer mysqlHook.Flush()
 
@@ -53,9 +51,7 @@ func main() {
 	defer db.Close()
 
 	tableName := "e_log"
-	mysqlHook := mysqlhook.New(
-		mysqlhook.SetExec(mysqlhook.NewExec(db, tableName)),
-	)
+	mysqlHook := mysqlhook.Default(db, tableName)
 	defer db.Exec(fmt.Sprintf("drop table %s", tableName))
 
 	log := logrus.New()
