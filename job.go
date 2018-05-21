@@ -15,6 +15,10 @@ type job struct {
 	filter func(*logrus.Entry) *logrus.Entry
 }
 
+func (j *job) Reset(entry *logrus.Entry) {
+	j.entry = entry
+}
+
 func (j *job) Job() {
 	if j.extra != nil {
 		for k, v := range j.extra {

@@ -3,6 +3,7 @@ package mysqlhook
 import (
 	"database/sql"
 	"io"
+	"sync"
 
 	"github.com/LyricTian/queue"
 	"github.com/Sirupsen/logrus"
@@ -109,6 +110,16 @@ func New(opt ...Option) *Hook {
 	return &Hook{
 		opts: opts,
 		q:    q,
+		pool: sync.Pool{
+			New: func() interface{} {
+				return &job{
+					out:    opts.out,
+					extra:  opts.extra,
+					exec:   opts.exec,
+					filter: opts.filter,
+				}
+			},
+		},
 	}
 }
 
@@ -116,6 +127,7 @@ func New(opt ...Option) *Hook {
 type Hook struct {
 	opts options
 	q    *queue.Queue
+	pool sync.Pool
 }
 
 // Levels returns the available logging levels
@@ -125,14 +137,8 @@ func (h *Hook) Levels() []logrus.Level {
 
 // Fire is called when a log event is fired
 func (h *Hook) Fire(entry *logrus.Entry) error {
-	job := &job{
-		out:    h.opts.out,
-		entry:  entry,
-		extra:  h.opts.extra,
-		exec:   h.opts.exec,
-		filter: h.opts.filter,
-	}
-
+	job := h.pool.Get().(*job)
+	job.Reset(entry)
 	h.q.Push(job)
 	return nil
 }
