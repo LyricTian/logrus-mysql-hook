@@ -2,7 +2,7 @@ language: go
 sudo: false
 go_import_path: github.com/LyricTian/logrus-mysql-hook
 go:
-  - 1.7
+  - 1.9
 services:
   - mysql
 before_install:
