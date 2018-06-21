@@ -1,8 +1,6 @@
-# MySQL Hook for [Logrus](https://github.com/sirupsen/logrus)
+# An asynchronous MySQL Hook for [Logrus](https://github.com/sirupsen/logrus)
 
-> A mysql-based logrus hook
-
-[![Build][Build-Status-Image]][Build-Status-Url] [![Coverage][Coverage-Image]][Coverage-Url] [![ReportCard][reportcard-image]][reportcard-url] [![GoDoc][godoc-image]][godoc-url] [![License][license-image]][license-url]
+[![Build][Build-Status-Image]][Build-Status-Url] [![Codecov][codecov-image]][codecov-url] [![ReportCard][reportcard-image]][reportcard-url] [![GoDoc][godoc-image]][godoc-url] [![License][license-image]][license-url]
 
 ## Quick Start
 
@@ -50,7 +48,7 @@ func main() {
 	}
 	defer db.Close()
 
-	tableName := "e_log"
+	tableName := "t_log"
 	mysqlHook := mysqlhook.Default(db, tableName)
 	defer db.Exec(fmt.Sprintf("drop table %s", tableName))
 
@@ -79,8 +77,8 @@ func main() {
 
 [Build-Status-Url]: https://travis-ci.org/LyricTian/logrus-mysql-hook
 [Build-Status-Image]: https://travis-ci.org/LyricTian/logrus-mysql-hook.svg?branch=master
-[Coverage-Url]: https://coveralls.io/github/LyricTian/logrus-mysql-hook?branch=master
-[Coverage-Image]: https://coveralls.io/repos/github/LyricTian/logrus-mysql-hook/badge.svg?branch=master
+[codecov-url]: https://codecov.io/gh/LyricTian/logrus-mysql-hook
+[codecov-image]: https://codecov.io/gh/LyricTian/logrus-mysql-hook/branch/master/graph/badge.svg
 [reportcard-url]: https://goreportcard.com/report/github.com/LyricTian/logrus-mysql-hook
 [reportcard-image]: https://goreportcard.com/badge/github.com/LyricTian/logrus-mysql-hook
 [godoc-url]: https://godoc.org/github.com/LyricTian/logrus-mysql-hook
