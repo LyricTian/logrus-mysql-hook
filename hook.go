@@ -90,10 +90,11 @@ func SetOut(out io.Writer) Option {
 type Option func(*options)
 
 // Default create a default mysql hook
-func Default(db *sql.DB, tableName string) *Hook {
-	return New(
-		SetExec(NewExec(db, tableName)),
-	)
+func Default(db *sql.DB, tableName string, opts ...Option) *Hook {
+	var options []Option
+	options = append(options, opts...)
+	options = append(options, SetExec(NewExec(db, tableName)))
+	return New(options...)
 }
 
 // New creates a hook to be added to an instance of logger

@@ -29,9 +29,8 @@ func TestHook(t *testing.T) {
 	}
 
 	tableName := "t_log"
-	hook := mysqlhook.New(
+	hook := mysqlhook.Default(db, tableName,
 		mysqlhook.SetExtra(map[string]interface{}{"foo": "bar"}),
-		mysqlhook.SetExec(mysqlhook.NewExec(db, tableName)),
 		mysqlhook.SetFilter(filter),
 	)
 
@@ -95,9 +94,7 @@ func ExampleHook() {
 	defer db.Close()
 
 	tableName := "e_log"
-	mysqlHook := mysqlhook.New(
-		mysqlhook.SetExec(mysqlhook.NewExec(db, tableName)),
-	)
+	mysqlHook := mysqlhook.Default(db, tableName)
 	defer db.Exec(fmt.Sprintf("drop table %s", tableName))
 
 	log := logrus.New()
