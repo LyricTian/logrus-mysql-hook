@@ -12,10 +12,18 @@ type job struct {
 	entry  *logrus.Entry
 	exec   Execer
 	extra  map[string]interface{}
-	filter func(*logrus.Entry) *logrus.Entry
+	filter FilterHandle
 }
 
-func (j *job) Reset(entry *logrus.Entry) {
+func (j *job) Reset(e *logrus.Entry) {
+	entry := logrus.NewEntry(e.Logger)
+	entry.Data = make(logrus.Fields)
+	entry.Time = e.Time
+	entry.Level = e.Level
+	entry.Message = e.Message
+	for k, v := range e.Data {
+		entry.Data[k] = v
+	}
 	j.entry = entry
 }
 

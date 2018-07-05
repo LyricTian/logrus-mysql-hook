@@ -21,12 +21,15 @@ var defaultOptions = options{
 	},
 }
 
+// FilterHandle a filter handler
+type FilterHandle func(*logrus.Entry) *logrus.Entry
+
 type options struct {
 	maxQueues  int
 	maxWorkers int
 	extra      map[string]interface{}
 	exec       Execer
-	filter     func(*logrus.Entry) *logrus.Entry
+	filter     FilterHandle
 	levels     []logrus.Level
 	out        io.Writer
 }
@@ -60,7 +63,7 @@ func SetExec(exec Execer) Option {
 }
 
 // SetFilter set the entry filter
-func SetFilter(filter func(*logrus.Entry) *logrus.Entry) Option {
+func SetFilter(filter FilterHandle) Option {
 	return func(o *options) {
 		o.filter = filter
 	}
