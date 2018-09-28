@@ -20,18 +20,19 @@ func TestHook(t *testing.T) {
 	}
 	defer db.Close()
 
-	var filter = func(entry *logrus.Entry) *logrus.Entry {
-		if _, ok := entry.Data["foo2"]; ok {
-			delete(entry.Data, "foo2")
-		}
-
-		return entry
-	}
-
 	tableName := "t_log"
-	hook := mysqlhook.Default(db, tableName,
+	extraItems := []*mysqlhook.ExecExtraItem{
+		mysqlhook.NewExecExtraItem("type", "varchar(50)"),
+	}
+	hook := mysqlhook.DefaultWithExtra(db, tableName,
+		extraItems,
 		mysqlhook.SetExtra(map[string]interface{}{"foo": "bar"}),
-		mysqlhook.SetFilter(filter),
+		mysqlhook.SetFilter(func(entry *logrus.Entry) *logrus.Entry {
+			if _, ok := entry.Data["foo2"]; ok {
+				delete(entry.Data, "foo2")
+			}
+			return entry
+		}),
 	)
 
 	defer db.Exec(fmt.Sprintf("drop table `%s`", tableName))
@@ -39,19 +40,20 @@ func TestHook(t *testing.T) {
 	log := logrus.New()
 	log.AddHook(hook)
 
-	log.WithField("foo2", "bar").Infof("test foo")
+	log.WithField("foo2", "bar").WithField("type", "test").Infof("test foo")
 	hook.Flush()
 
-	row := db.QueryRow(fmt.Sprintf("select level,message,data,created from %s", tableName))
+	row := db.QueryRow(fmt.Sprintf("select level,message,data,created,type from %s", tableName))
 
 	var (
 		level   int
 		message string
 		data    string
 		created int64
+		typ     string
 	)
 
-	err = row.Scan(&level, &message, &data, &created)
+	err = row.Scan(&level, &message, &data, &created, &typ)
 	if err != nil {
 		t.Error(err)
 		return
@@ -64,6 +66,11 @@ func TestHook(t *testing.T) {
 
 	if message != "test foo" {
 		t.Errorf("Not expected value:%v", message)
+		return
+	}
+
+	if typ != "test" {
+		t.Errorf("Not expected value:%v", typ)
 		return
 	}
 

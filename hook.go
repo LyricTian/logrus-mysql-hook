@@ -91,9 +91,14 @@ type Option func(*options)
 
 // Default create a default mysql hook
 func Default(db *sql.DB, tableName string, opts ...Option) *Hook {
+	return DefaultWithExtra(db, tableName, nil, opts...)
+}
+
+// DefaultWithExtra create a default mysql hook with extra items
+func DefaultWithExtra(db *sql.DB, tableName string, extraItems []*ExecExtraItem, opts ...Option) *Hook {
 	var options []Option
 	options = append(options, opts...)
-	options = append(options, SetExec(NewExec(db, tableName)))
+	options = append(options, SetExec(NewExec(db, tableName, extraItems...)))
 	return New(options...)
 }
 

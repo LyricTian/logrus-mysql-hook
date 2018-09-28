@@ -71,6 +71,65 @@ func main() {
 }
 ```
 
+### Use Extra Item Examples
+
+```go
+package main
+
+import (
+	"database/sql"
+	"fmt"
+
+	"github.com/LyricTian/logrus-mysql-hook"
+	"github.com/Sirupsen/logrus"
+
+	_ "github.com/go-sql-driver/mysql"
+)
+
+func main() {
+	db, err := sql.Open("mysql", "root:123456@tcp(127.0.0.1:3306)/test?charset=utf8")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer db.Close()
+
+	tableName := "t_log"
+	extraItems := []*mysqlhook.ExecExtraItem{
+		mysqlhook.NewExecExtraItem("type", "varchar(50)"),
+		mysqlhook.NewExecExtraItem("user_id", "varchar(50)"),
+	}
+	mysqlHook := mysqlhook.DefaultWithExtra(db, tableName, extraItems)
+
+	defer db.Exec(fmt.Sprintf("drop table %s", tableName))
+
+	log := logrus.New()
+	log.AddHook(mysqlHook)
+	log.WithField("foo", "bar").
+		WithField("type", "system").
+		WithField("user_id", "admin").
+		Info("foo test")
+
+	mysqlHook.Flush()
+
+	var (
+		message string
+		typ     string
+		userID  string
+	)
+	row := db.QueryRow(fmt.Sprintf("select message,type,user_id from %s", tableName))
+	err = row.Scan(&message, &typ, &userID)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Printf("[%s-%s]:%s\n", typ, userID, message)
+
+	// Output: [system-admin]:foo test
+}
+
+```
+
 ## MIT License
 
     Copyright (c) 2018 Lyric
