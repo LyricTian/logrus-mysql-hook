@@ -6,7 +6,7 @@ import (
 	"sync"
 
 	"github.com/LyricTian/queue"
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 var defaultOptions = options{
