@@ -34,28 +34,14 @@ func NewExec(db *sql.DB, tableName string, extraItems ...*ExecExtraItem) Execer 
 	sourceItems = append(sourceItems, NewExecExtraItem("id", "bigint not null primary key auto_increment"))
 	sourceItems = append(sourceItems, NewExecExtraItem("level", "int"))
 	sourceItems = append(sourceItems, NewExecExtraItem("message", "varchar(1024)"))
-	sourceItems = append(sourceItems, NewExecExtraItem("data", "text"))
-	sourceItems = append(sourceItems, NewExecExtraItem("created", "bigint"))
 	if len(extraItems) > 0 {
 		sourceItems = append(sourceItems, extraItems...)
 	}
+	sourceItems = append(sourceItems, NewExecExtraItem("data", "text"))
+	sourceItems = append(sourceItems, NewExecExtraItem("created", "bigint"))
 
 	var fields []string
 	for _, item := range sourceItems {
-
-		exists := false
-		for i := range fields {
-			if ss := strings.Split(fields[i], " "); ss[0] == item.Field {
-				exists = true
-				fields[i] = fmt.Sprintf("%s %s", item.Field, item.DBType)
-				break
-			}
-		}
-
-		if exists {
-			continue
-		}
-
 		fields = append(fields, fmt.Sprintf("%s %s", item.Field, item.DBType))
 	}
 
