@@ -146,9 +146,10 @@ func (h *Hook) Levels() []logrus.Level {
 
 // Fire is called when a log event is fired
 func (h *Hook) Fire(entry *logrus.Entry) error {
-	job := h.pool.Get().(*job)
+	job := &*(h.pool.Get().(*job))
 	job.Reset(entry)
 	h.q.Push(job)
+	h.pool.Put(job)
 	return nil
 }
 
