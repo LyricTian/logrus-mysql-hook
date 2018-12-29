@@ -13,8 +13,12 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+const (
+	dsn = "root:@tcp(127.0.0.1:3306)/myapp_test?charset=utf8"
+)
+
 func TestHook(t *testing.T) {
-	db, err := sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/myapp_test?charset=utf8")
+	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		t.Error(err)
 		return
@@ -94,7 +98,7 @@ func TestHook(t *testing.T) {
 }
 
 func ExampleHook() {
-	db, err := sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/myapp_test?charset=utf8")
+	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		fmt.Println(err)
 		return
