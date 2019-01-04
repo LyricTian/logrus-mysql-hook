@@ -4,12 +4,14 @@ import (
 	"database/sql"
 	"fmt"
 	"io"
+	"os"
 
 	"github.com/LyricTian/queue"
 	"github.com/sirupsen/logrus"
 )
 
 var defaultOptions = options{
+	out:        os.Stderr,
 	maxQueues:  512,
 	maxWorkers: 2,
 	levels: []logrus.Level{
