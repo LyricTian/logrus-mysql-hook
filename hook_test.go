@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	dsn = "root:@tcp(127.0.0.1:3306)/myapp_test?charset=utf8"
+	dsn = "root:@tcp(127.0.0.1:3306)/myapp_test?charset=utf8&parseTime=true"
 )
 
 func TestHook(t *testing.T) {
@@ -48,17 +48,17 @@ func TestHook(t *testing.T) {
 	log.WithField("foo2", "bar").WithField("type", "test").Infof("test foo")
 	hook.Flush()
 
-	row := db.QueryRow(fmt.Sprintf("select level,message,data,created,type from %s", tableName))
+	row := db.QueryRow(fmt.Sprintf("select level,message,data,time,type from %s", tableName))
 
 	var (
 		level   int
 		message string
 		data    string
-		created int64
+		tt      time.Time
 		typ     string
 	)
 
-	err = row.Scan(&level, &message, &data, &created, &typ)
+	err = row.Scan(&level, &message, &data, &tt, &typ)
 	if err != nil {
 		t.Error(err)
 		return
@@ -91,8 +91,8 @@ func TestHook(t *testing.T) {
 		return
 	}
 
-	if created == 0 || time.Unix(created, 0).IsZero() {
-		t.Errorf("Not expected value:%v", created)
+	if tt.IsZero() {
+		t.Errorf("Not expected value:%v", tt)
 		return
 	}
 }
