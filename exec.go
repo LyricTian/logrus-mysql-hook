@@ -38,7 +38,7 @@ func NewExec(db *sql.DB, tableName string, extraItems ...*ExecExtraItem) Execer 
 		sourceItems = append(sourceItems, extraItems...)
 	}
 	sourceItems = append(sourceItems, NewExecExtraItem("data", "text"))
-	sourceItems = append(sourceItems, NewExecExtraItem("created", "DATETIME"))
+	sourceItems = append(sourceItems, NewExecExtraItem("created_at", "DATETIME"))
 
 	var fields []string
 	for _, item := range sourceItems {
@@ -87,7 +87,7 @@ func (e *defaultExec) Exec(entry *logrus.Entry) error {
 				data = string(jsonData)
 			}
 			values = append(values, data)
-		case "created":
+		case "created_at":
 			values = append(values, entry.Time)
 		default:
 			var value interface{}
